@@ -14,27 +14,41 @@
         }
 
         .timeline {
-            position: absolute;
+            position: absolute; overflow: hidden;
             bottom: 0;
             width: 100%;
             height: 200px;
             background-color: #369;
         }
+
+        .timeline-point {
+            height: 200px;
+            width: 30px;
+            background-color: #963;
+        }
+
         </style>
     </head>
     <body>
         <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
         <script src="src/Timeline.js"></script>
+        <script src="src/Point.js"></script>
         <script>
 
         $(function () {
 
             var t = new Timeline({ backgroundColor: "red" });
 
+            t.addPoint(new Point());
+            t.addPoint(new Point());
+            t.addPoint(new Point());
+
             console.log(t);
 
-            window.setTimeout(function () { t.hide(); }, 1000);
-            window.setTimeout(function () { t.show(); }, 2000);
+
+
+            // window.setTimeout(function () { t.hide(); }, 1000);
+            // window.setTimeout(function () { t.show(); }, 2000);
 
         });
 
