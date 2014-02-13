@@ -31,24 +31,23 @@
     </head>
     <body>
         <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+        <script src="src/vendor/moment.min.js"></script>
         <script src="src/Timeline.js"></script>
         <script src="src/Point.js"></script>
         <script>
 
         $(function () {
 
+
             var t = new Timeline({ backgroundColor: "red" });
 
-            t.addPoint(new Point());
-            t.addPoint(new Point());
-            t.addPoint(new Point());
+            t.addPoint(new Point(moment("2010-01-01")));
+            t.addPoint(new Point(moment("2013-01-01")));
+            t.addPoint(new Point(moment("2012-01-01")));
 
             console.log(t);
 
 
-
-            // window.setTimeout(function () { t.hide(); }, 1000);
-            // window.setTimeout(function () { t.show(); }, 2000);
 
         });
 
