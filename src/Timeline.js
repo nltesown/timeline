@@ -80,8 +80,7 @@ var Timeline = (function () {
 		}
 
 		timelineDateSpan = upperPointMoment.diff(lowerPointMoment, "days");
-
-		console.log(timelineDateSpan);
+		//---
 
 		self.points.push(point);
 	}
