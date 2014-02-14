@@ -1,28 +1,30 @@
-/*
- * Point
- */
+// Point
+// This constructor function takes an object and returns an object that enforces the Point object specification
+// Dependencies: moment.js
 
-var Point = (function () {
-	var self;
+var Point = function (opts) {
+	"use strict";
+	var defaults = {
+		color: "blue",
+		title: "Untitled"
+	};
 
-	var constructor = function (dateTime, options) {
-		self = this;
+	opts = $.extend(defaults, opts);
 
-		if (typeof dateTime === "undefined" || !dateTime._isAMomentObject) {
-			throw new Error("dateTime must be a moment.js object");
+	opts.date = moment(opts.date).format("YYYY-MM-DD");
+
+	try {
+		if (opts.date === "Invalid date") {
+			throw new Error("Invalid date");
 		}
+	} catch(e) {
+		console.log(e.message);
+		return;
+	}
 
-		self.dateTime = moment().unix(dateTime);
-
-
-
-
+	return {
+		color: opts.color,
+		date: opts.date,
+		title: opts.title
 	};
-
-	constructor.prototype = {
-	};
-
-	// Add methods here
-
-	return constructor;
-}());
+};
