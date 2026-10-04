@@ -224,16 +224,24 @@
 			}
 
 			function start_inertia(selection: PixelSelection) {
+				const release_time = performance.now();
+				const recent_samples = pan_samples.filter(
+					(sample) => release_time - sample.time <= inertia_sample_window
+				);
+				const last_sample = pan_samples.at(-1);
+
+				// Idle before release: no movement within the sample window means no glide.
+				if (!last_sample || release_time - last_sample.time > inertia_sample_window) {
+					edge_bounce_velocity = 0;
+					return;
+				}
+
 				let velocity = edge_bounce_velocity;
 
-				if (Math.abs(velocity) < inertia_min_velocity && pan_samples.length >= 2) {
-					const first_sample = pan_samples[0];
-					const last_sample = pan_samples.at(-1);
-
-					if (last_sample) {
-						velocity =
-							(last_sample.center - first_sample.center) / (last_sample.time - first_sample.time);
-					}
+				if (Math.abs(velocity) < inertia_min_velocity && recent_samples.length >= 2) {
+					const first_sample = recent_samples[0];
+					const duration = last_sample.time - first_sample.time;
+					velocity = duration > 0 ? (last_sample.center - first_sample.center) / duration : 0;
 				}
 
 				if (!Number.isFinite(velocity) || Math.abs(velocity) < inertia_min_velocity) return;
