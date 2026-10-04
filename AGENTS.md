@@ -1,6 +1,6 @@
-# Captiva 6
+# Timeline
 
-This project implements a timeline UI component for Svelte. A timeline is a web UI widget that allows the user to navigate, visualize and interact with "points" located within a period of time: e. g. historical events, and to trigger UI events (beyond the scope of the component itself).
+This project implements a timeline UI component for Svelte. A timeline is a web UI widget that allows the user to navigate, visualize and interact with temporal "points" represented on an horizontal time axis (e. g. historical events).
 
 ## For every task
 
