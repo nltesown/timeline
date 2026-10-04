@@ -9,13 +9,37 @@
 		start,
 		end,
 		initial_start,
-		initial_end
+		initial_end,
+		inertia_min_velocity = 0.02,
+		inertia_max_velocity = 1.5,
+		inertia_friction = 0.92,
+		inertia_sample_window = 120,
+		inertia_bounce_damping = 0.28,
+		inertia_edge_bounce_factor = 0.28,
+		inertia_edge_bounce_min = 0.12,
+		inertia_edge_bounce_max = 0.55
 	}: {
 		events: TimelineEvent[];
 		start: Date;
 		end: Date;
 		initial_start?: Date;
 		initial_end?: Date;
+		/** Velocity (px/ms) below which the glide stops and no glide starts. */
+		inertia_min_velocity?: number;
+		/** Maximum glide velocity (px/ms) after release. */
+		inertia_max_velocity?: number;
+		/** Velocity multiplier per 16.67 ms frame; closer to 1 glides longer. */
+		inertia_friction?: number;
+		/** Only the last N ms of pointer movement are used to estimate release velocity. */
+		inertia_sample_window?: number;
+		/** Fraction of velocity kept (reversed) when the glide hits an edge. */
+		inertia_bounce_damping?: number;
+		/** Scales the drag speed into the rebound velocity when dragging past an edge. */
+		inertia_edge_bounce_factor?: number;
+		/** Lower bound (px/ms) of the edge rebound velocity. */
+		inertia_edge_bounce_min?: number;
+		/** Upper bound (px/ms) of the edge rebound velocity. */
+		inertia_edge_bounce_max?: number;
 	} = $props();
 
 	let chart_element: HTMLDivElement;
@@ -175,8 +199,11 @@
 
 						if (moving_outward) {
 							const bounce_speed = Math.max(
-								0.12,
-								Math.min(0.55, (Math.abs(delta) / duration) * 0.28)
+								inertia_edge_bounce_min,
+								Math.min(
+									inertia_edge_bounce_max,
+									(Math.abs(delta) / duration) * inertia_edge_bounce_factor
+								)
 							);
 							edge_bounce_velocity = selection[0] <= 0 ? bounce_speed : -bounce_speed;
 						}
@@ -185,7 +212,7 @@
 					pan_samples.push({ time, center });
 				}
 
-				pan_samples = pan_samples.filter((sample) => time - sample.time <= 120);
+				pan_samples = pan_samples.filter((sample) => time - sample.time <= inertia_sample_window);
 			}
 
 			function brush_selection(): PixelSelection | null {
@@ -198,7 +225,7 @@
 			function start_inertia(selection: PixelSelection) {
 				let velocity = edge_bounce_velocity;
 
-				if (Math.abs(velocity) < 0.02 && pan_samples.length >= 2) {
+				if (Math.abs(velocity) < inertia_min_velocity && pan_samples.length >= 2) {
 					const first_sample = pan_samples[0];
 					const last_sample = pan_samples.at(-1);
 
@@ -208,9 +235,9 @@
 					}
 				}
 
-				if (!Number.isFinite(velocity) || Math.abs(velocity) < 0.02) return;
+				if (!Number.isFinite(velocity) || Math.abs(velocity) < inertia_min_velocity) return;
 
-				velocity = Math.max(-1.5, Math.min(1.5, velocity));
+				velocity = Math.max(-inertia_max_velocity, Math.min(inertia_max_velocity, velocity));
 				let current_selection = selection;
 				let previous_time = performance.now();
 
@@ -222,7 +249,7 @@
 					const moved = next_selection[0] - current_selection[0];
 					const hit_boundary = Math.abs(moved - requested_offset) > 0.01;
 
-					if (hit_boundary) velocity *= -0.28;
+					if (hit_boundary) velocity *= -inertia_bounce_damping;
 
 					if (Math.abs(moved) < 0.01 && !hit_boundary) {
 						animation_frame = undefined;
@@ -231,9 +258,9 @@
 
 					current_selection = next_selection;
 					brush_group.call(brush.move, current_selection);
-					velocity *= Math.pow(0.92, elapsed / 16.67);
+					velocity *= Math.pow(inertia_friction, elapsed / 16.67);
 
-					if (Math.abs(velocity) >= 0.02) {
+					if (Math.abs(velocity) >= inertia_min_velocity) {
 						animation_frame = requestAnimationFrame(continue_inertia);
 					} else {
 						animation_frame = undefined;
