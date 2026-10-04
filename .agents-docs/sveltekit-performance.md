@@ -16,21 +16,21 @@ read_when: Optimizing route loading, caching data, prerendering, or placing new 
 
 ```svelte
 <script>
-  let show_heavy = $state(false);
-  let HeavyComponent = $state(null);
+	let show_heavy = $state(false);
+	let HeavyComponent = $state(null);
 
-  async function load_component() {
-    const module = await import("./Heavy.svelte");
-    HeavyComponent = module.default;
-  }
+	async function load_component() {
+		const module = await import('./Heavy.svelte');
+		HeavyComponent = module.default;
+	}
 
-  $effect(() => {
-    if (show_heavy && !HeavyComponent) load_component();
-  });
+	$effect(() => {
+		if (show_heavy && !HeavyComponent) load_component();
+	});
 </script>
 
 {#if show_heavy && HeavyComponent}
-  <HeavyComponent />
+	<HeavyComponent />
 {/if}
 ```
 
@@ -50,8 +50,8 @@ export const prerender = true;
 ```ts
 // +page.server.ts
 export async function load({ setHeaders }) {
-  setHeaders({ "cache-control": "public, max-age=3600" });
-  return { data };
+	setHeaders({ 'cache-control': 'public, max-age=3600' });
+	return { data };
 }
 ```
 

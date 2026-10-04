@@ -19,12 +19,12 @@ Docs: https://svelte.dev/docs/kit/load
 Runs only on the server. Has access to the database, private env vars, and `locals`.
 
 ```ts
-import type { PageServerLoad } from "./$types";
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-  const user = locals.user;
-  const product = await db.product.findUnique({ where: { id: params.id } });
-  return { user, product };
+	const user = locals.user;
+	const product = await db.product.findUnique({ where: { id: params.id } });
+	return { user, product };
 };
 ```
 
@@ -35,12 +35,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 Runs on both server and client. Use SvelteKit's `fetch` (not native `fetch`).
 
 ```ts
-import type { PageLoad } from "./$types";
+import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, params }) => {
-  // ✅ Use SvelteKit's fetch — not the global fetch
-  const response = await fetch(`/api/products/${params.id}`);
-  return { product: await response.json() };
+	// ✅ Use SvelteKit's fetch — not the global fetch
+	const response = await fetch(`/api/products/${params.id}`);
+	return { product: await response.json() };
 };
 ```
 
@@ -50,14 +50,14 @@ export const load: PageLoad = async ({ fetch, params }) => {
 
 ```svelte
 <script>
-  let { data } = $props();
+	let { data } = $props();
 
-  let items = $state(data.items);
-  let filter = $state("all");
+	let items = $state(data.items);
+	let filter = $state('all');
 
-  let filtered_items = $derived(
-    filter === "all" ? items : items.filter((item) => item.status === filter)
-  );
+	let filtered_items = $derived(
+		filter === 'all' ? items : items.filter((item) => item.status === filter)
+	);
 </script>
 ```
 
@@ -68,15 +68,15 @@ export const load: PageLoad = async ({ fetch, params }) => {
 ```ts
 // ❌ WRONG — sequential, slow
 export async function load() {
-  const user = await fetch_user();
-  const posts = await fetch_posts(); // waits for user
-  return { user, posts };
+	const user = await fetch_user();
+	const posts = await fetch_posts(); // waits for user
+	return { user, posts };
 }
 
 // ✅ RIGHT — parallel
 export async function load() {
-  const [user, posts] = await Promise.all([fetch_user(), fetch_posts()]);
-  return { user, posts };
+	const [user, posts] = await Promise.all([fetch_user(), fetch_posts()]);
+	return { user, posts };
 }
 ```
 
@@ -89,26 +89,26 @@ Return a Promise instead of awaiting it to stream data after initial render.
 ```ts
 // +page.server.ts
 export async function load() {
-  return {
-    user: await fetch_user(), // Blocks SSR — needed for initial render
-    analytics: fetch_analytics(), // Streams — Promise, not awaited
-  };
+	return {
+		user: await fetch_user(), // Blocks SSR — needed for initial render
+		analytics: fetch_analytics() // Streams — Promise, not awaited
+	};
 }
 ```
 
 ```svelte
 <script>
-  let { data } = $props();
+	let { data } = $props();
 </script>
 
 <h1>Welcome, {data.user.name}</h1>
 
 {#await data.analytics}
-  <p>Loading analytics...</p>
+	<p>Loading analytics...</p>
 {:then analytics}
-  <Analytics {analytics} />
+	<Analytics {analytics} />
 {:catch error}
-  <p>Error: {error.message}</p>
+	<p>Error: {error.message}</p>
 {/await}
 ```
 
@@ -118,13 +118,13 @@ export async function load() {
 
 ```svelte
 <script>
-  import { invalidate, invalidateAll } from "$app/navigation";
+	import { invalidate, invalidateAll } from '$app/navigation';
 
-  async function refresh() {
-    await invalidate("/api/posts"); // re-runs load functions that depend on this URL
-    // or
-    await invalidateAll(); // re-runs all load functions
-  }
+	async function refresh() {
+		await invalidate('/api/posts'); // re-runs load functions that depend on this URL
+		// or
+		await invalidateAll(); // re-runs all load functions
+	}
 </script>
 ```
 

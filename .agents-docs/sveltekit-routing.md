@@ -34,16 +34,16 @@ Docs: https://svelte.dev/docs/kit/introduction
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script>
-  let { children } = $props();
+	let { children } = $props();
 </script>
 
 <nav>
-  <a href="/">Home</a>
-  <a href="/about">About</a>
+	<a href="/">Home</a>
+	<a href="/about">About</a>
 </nav>
 
 <main>
-  {@render children()}
+	{@render children()}
 </main>
 ```
 
@@ -61,8 +61,8 @@ Docs: https://svelte.dev/docs/kit/introduction
 ```ts
 // +page.server.ts
 export async function load({ params }) {
-  const post = await db.post.findUnique({ where: { slug: params.slug } });
-  return { post };
+	const post = await db.post.findUnique({ where: { slug: params.slug } });
+	return { post };
 }
 ```
 
@@ -84,7 +84,7 @@ Use route groups to share layouts or load functions without changing the URL str
 ```svelte
 <!-- +error.svelte -->
 <script>
-  import { page } from "$app/state";
+	import { page } from '$app/state';
 </script>
 
 <h1>{page.status}</h1>
@@ -94,16 +94,16 @@ Use route groups to share layouts or load functions without changing the URL str
 
 ```ts
 // +page.server.ts
-import { error } from "@sveltejs/kit";
+import { error } from '@sveltejs/kit';
 
 export async function load({ params }) {
-  const product = await db.product.findUnique({ where: { id: params.id } });
+	const product = await db.product.findUnique({ where: { id: params.id } });
 
-  if (!product) {
-    throw error(404, "Product not found");
-  }
+	if (!product) {
+		throw error(404, 'Product not found');
+	}
 
-  return { product };
+	return { product };
 }
 ```
 

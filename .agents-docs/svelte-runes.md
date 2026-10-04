@@ -18,8 +18,8 @@ Use Svelte 5 runes for new reactive code. Verify version-sensitive behavior agai
 
 ```svelte
 <script>
-  let count = $state(0);
-  let doubled = $derived(count * 2);
+	let count = $state(0);
+	let doubled = $derived(count * 2);
 </script>
 
 <button onclick={() => count++}>{doubled}</button>
@@ -33,14 +33,14 @@ Use `$derived.by()` for a computed value that needs a block. Keep state local wh
 
 ```svelte
 <script>
-  import { browser } from "$app/environment";
+	import { browser } from '$app/environment';
 
-  let count = $state(0);
+	let count = $state(0);
 
-  // Persist browser state without accessing localStorage during SSR.
-  $effect(() => {
-    if (browser) localStorage.setItem("count", String(count));
-  });
+	// Persist browser state without accessing localStorage during SSR.
+	$effect(() => {
+		if (browser) localStorage.setItem('count', String(count));
+	});
 </script>
 ```
 
@@ -52,8 +52,8 @@ Receive component inputs with `$props()`. Treat props as inputs and do not mutat
 
 ```svelte
 <script>
-  let { user } = $props();
-  let local_user = $state({ ...user });
+	let { user } = $props();
+	let local_user = $state({ ...user });
 </script>
 ```
 
