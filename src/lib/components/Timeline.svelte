@@ -94,6 +94,7 @@
 				.append('svg')
 				.attr('width', chart_width)
 				.attr('height', context_height)
+				.style('--brush-height', `${inner_context_height}px`)
 				.attr(
 					'aria-label',
 					'Timeline overview. Drag the selection to change the displayed period.'
@@ -370,6 +371,12 @@
 
 	:global(.timeline .handle) {
 		fill: #dc2626;
+		/* D3 rewrites the x/y/width/height attributes (6px wide) on every redraw; CSS geometry overrides them. */
+		/* width: 2px; */
+		y: -1px;
+		height: calc(var(--brush-height) + 2px);
+		/* D3 centers a 6px handle on the edge; re-center the 4px one. */
+		/* transform: translateX(1px); */
 	}
 
 	:global(.timeline .event-node:hover) {
